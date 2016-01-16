@@ -1,7 +1,7 @@
 'use strict';
 
 $(document).ready(init);
-  
+
 // var cityScope = '';
 // var stateScope = '';
 
@@ -33,24 +33,15 @@ function getWeatherfrom(city, state){
 
   $.get('http://api.wunderground.com/api/b8e39627c52c5f82/conditions/q/'+state+'/'+city+'.json')
   .success(function(data){
-
     var ultraV = data.current_observation.UV;
-    $('#ultraV').append('UV level = '+ultraV);
     var dewpoint = data.current_observation.dewpoint_f;
-    $('#dewpoint').append('Dewpoint: '+dewpoint);
     var feelslike = data.current_observation.feelslike_f;
-    $('#feelslike').append('Feelslike: '+feelslike);
     var tempf = data.current_observation.temp_f;
-    $('#temp').append('Temp: '+tempf);console.log(tempf);
     var icon = data.current_observation.icon_url;
-    $('#icon').css({'background-image': 'url('+icon+')', 'background-position': 'centered', 'background-repeat': 'no-repeat',  'background-size': 'contain'})
     var lastUpdate = data.current_observation.observation_time;
-    $('#lastUpdate').append(lastUpdate);
     var weather = data.current_observation.weather;
-    $('#weather').append(weather);
     var wind = data.current_observation.wind_string;
-    $('#wind').append(wind);
-
+    firstData(ultraV, dewpoint, feelslike, tempf, icon, lastUpdate, weather, wind)
   })
   .error(function(err){console.log('error', err)})
   $.get('http://api.wunderground.com/api/b8e39627c52c5f82/almanac/q/'+state+'/'+city+'.json')
@@ -59,9 +50,7 @@ function getWeatherfrom(city, state){
     var recLowTemp = data.almanac.temp_low.record.F;
     var recordHiYear = data.almanac.temp_high.recordyear;
     var recordLowYear = data.almanac.temp_low.recordyear;
-    $('#recordHi').append('Record high for to day was '+recHiTemp+'. Set in '+recordHiYear+'.');
-    $('#recordLow').append('Record low for to day was '+recLowTemp+'. Set in '+recordLowYear+'.');
-
+    secondData(recHiTemp, recLowTemp, recordLowYear, recordHiYear);
   })
   .error(function(err){console.log('error', err)})
   $.get('http://api.wunderground.com/api/b8e39627c52c5f82/astronomy/q/'+state+'/'+city+'.json')
@@ -70,12 +59,34 @@ function getWeatherfrom(city, state){
     var sunsetH = data.sun_phase.sunset.hour;
     var sunriseM = data.sun_phase.sunrise.minute;
     var sunsetM = data.sun_phase.sunset.minute;
-    $('#sunrise').append('Sunrise today at '+sunriseH+':'+sunriseM+' AM.');
-    $('#sunset').append('Sunset today at '+sunsetH+':'+sunsetM+' PM.');
-
+    thirdData(sunriseM, sunriseH, sunsetM, sunsetH);
   })
   .error(function(err){console.log('error', err)})
 }
+function firstData(ultraV, dewpoint, feelslike, tempf, icon, lastUpdate, weather, wind){
+  $('#ultraV').append('UV level = '+ultraV);
+  $('#dewpoint').append('Dewpoint: '+dewpoint);
+  $('#feelslike').append('Feelslike: '+feelslike);
+  $('#temp').append('Temp: '+tempf);
+  $('#icon').css({'background-image': 'url('+icon+')', 'background-position': 'centered', 'background-repeat': 'no-repeat',  'background-size': 'contain'})
+  $('#lastUpdate').append(lastUpdate);
+  $('#weather').append(weather);
+  $('#wind').append(wind);
+}
+
+function secondData(recHiTemp, recLowTemp, recordLowYear, recordHiYear){
+  $('#recordHi').append('Record high for to day was '+recHiTemp+'. Set in '+recordHiYear+'.');
+  $('#recordLow').append('Record low for to day was '+recLowTemp+'. Set in '+recordLowYear+'.');
+
+}
+
+function thirdData(sunriseM, sunriseH, sunsetM, sunsetH){
+  $('#sunrise').append('Sunrise today at '+sunriseH+':'+sunriseM+' AM.');
+  $('#sunset').append('Sunset today at '+sunsetH+':'+sunsetM+' PM.');
+
+}
+
+
 // console.log(cityScope, stateScope);
 // function radar() {
 // $.get('http://api.wunderground.com/api/b8e39627c52c5f82/radar/q/'+stateScope+'/'+cityScope+'.gif?width=280&height=280&newmaps=1')
