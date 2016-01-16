@@ -6,11 +6,11 @@ $(document).ready(init);
 // var stateScope = '';
 
 function init() {
-  $('button').on('click', init);
+  $('#home').on('click', caller);
   // $('#icon').on('click', radar)
   $.get('http://api.wunderground.com/api/b8e39627c52c5f82/geolookup/q/autoip.json')
   .success(function(data){
-    $('#icon, #weather, #wind, #lastUpdate, #temp, #feelslike, #dewpoint, #recordHi, #recordLow, #sunrise, #sunset, #ultraV').empty();
+    // $('#icon, #weather, #wind, #lastUpdate, #temp, #feelslike, #dewpoint, #recordHi, #recordLow, #sunrise, #sunset, #ultraV').empty();
     var city = data.location.city.split(' ').join('_');
     var state = data.location.state;
     getWeatherfrom(city, state);
@@ -19,11 +19,25 @@ function init() {
   $('#inputBTN').on('click', place)
 }
 
+function caller(){
+  $.get('http://api.wunderground.com/api/b8e39627c52c5f82/geolookup/q/autoip.json')
+  .success(function(data){
+    // $('#icon, #weather, #wind, #lastUpdate, #temp, #feelslike, #dewpoint, #recordHi, #recordLow, #sunrise, #sunset, #ultraV').empty();
+    var city = data.location.city.split(' ').join('_');
+    var state = data.location.state;
+    getWeatherfrom(city, state);
+  })
+  .error(function(err){console.log('error', err)})
+
+}
+
 function place(e){
-  e.preventDefault();
-  $('#icon, #weather, #wind, #lastUpdate, #temp, #feelslike, #dewpoint, #recordHi, #recordLow, #sunrise, #sunset, #ultraV').empty();
+  e.stopPropagation();
+  // $('#icon, #weather, #wind, #lastUpdate, #temp, #feelslike, #dewpoint, #recordHi, #recordLow, #sunrise, #sunset, #ultraV').empty();
   var theCity = $('#inputCity').val();
   var theState = $('#inputState').val().toUpperCase();
+  // console.log(theCity);
+  // console.log(theState);
   getWeatherfrom(theCity, theState);
 }
 
@@ -64,25 +78,27 @@ function getWeatherfrom(city, state){
   .error(function(err){console.log('error', err)})
 }
 function firstData(ultraV, dewpoint, feelslike, tempf, icon, lastUpdate, weather, wind){
-  $('#ultraV').append('UV level = '+ultraV);
-  $('#dewpoint').append('Dewpoint: '+dewpoint);
-  $('#feelslike').append('Feelslike: '+feelslike);
-  $('#temp').append('Temp: '+tempf);
+  $('#ultraV').text('UV level = '+ultraV);
+  $('#dewpoint').text('Dewpoint: '+dewpoint);
+  $('#feelslike').text('Feelslike: '+feelslike);
+  $('#temp').text('Temp: '+tempf);
   $('#icon').css({'background-image': 'url('+icon+')', 'background-position': 'centered', 'background-repeat': 'no-repeat',  'background-size': 'contain'})
-  $('#lastUpdate').append(lastUpdate);
-  $('#weather').append(weather);
-  $('#wind').append(wind);
+  $('#lastUpdate').text(lastUpdate);
+  $('#weather').text(weather);
+  $('#wind').text(wind);
+  console.log(feelslike);
 }
 
 function secondData(recHiTemp, recLowTemp, recordLowYear, recordHiYear){
-  $('#recordHi').append('Record high for to day was '+recHiTemp+'. Set in '+recordHiYear+'.');
-  $('#recordLow').append('Record low for to day was '+recLowTemp+'. Set in '+recordLowYear+'.');
+  // $'#recordHi').text('')
+  $('#recordHi').text('Record high for to day was '+recHiTemp+'. Set in '+recordHiYear+'.');
+  $('#recordLow').text('Record low for to day was '+recLowTemp+'. Set in '+recordLowYear+'.');
 
 }
 
 function thirdData(sunriseM, sunriseH, sunsetM, sunsetH){
-  $('#sunrise').append('Sunrise today at '+sunriseH+':'+sunriseM+' AM.');
-  $('#sunset').append('Sunset today at '+sunsetH+':'+sunsetM+' PM.');
+  $('#sunrise').text('Sunrise today at '+sunriseH+':'+sunriseM+' AM.');
+  $('#sunset').text('Sunset today at '+sunsetH+':'+sunsetM+' PM.');
 
 }
 
